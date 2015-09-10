@@ -1,6 +1,7 @@
 'use strict';
 
 import isPlainObject from 'lodash-node/modern/objects/isPlainObject';
+import Color from 'color';
 
 let { isArray } = Array;
 
@@ -14,10 +15,16 @@ function jsToSassString(value) {
       case 'number':
         return value.toString();
       case 'string':
-        if (/[a-zA-Z_-]+/.test(value) == false) {
-          return `"${value}"`;
+        try {
+          let color = Color(value);
+          return value.toString();
+        } catch(e) {
+          if (/^[a-zA-Z0-9_-]+$/.test(value) == false) {
+            return `"${value}"`;
+          }
+
+          return value.toString();
         }
-        return value.toString();
       case 'object':
         if (isPlainObject(value)) {
           indentLevel += 1;
